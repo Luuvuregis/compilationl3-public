@@ -3,11 +3,45 @@ Package sc;
 Helpers
 
 lettre = [['a' .. 'z'] + ['A' .. 'Z']];
+chiffre = ['0' .. '9'];
+alpha = [lettre + ['_' + '$']];
+alphanum = [lettre + chiffre];
 
 Tokens
 
 espaces = (' ' | 13 | 10)+;
 commentaire= '#' [[0 .. 0xffff] - [10 + 13]]* (10 | 13 | 10 13);
+plus ='+';
+minus ='-';
+mult ='*';
+div ='/';
+mod ='%';
+and ='&';
+or ='|';
+not ='!';
+less ='<';
+equal ='=';
+l_par ='(';
+r_par =')';
+l_acco = '{';
+r_acco = '}';
+l_cro = '[';
+r_cro = ']';
+number = chiffre+;
+type_entier = 'entier';
+eps =;
+si = 'si';
+alors = 'alors';
+sinon = 'sinon';
+tant = 'tant';
+que = 'que';
+faire = 'faire';
+virgule = ',';
+pointvirgule = ';';
+retour = 'retour';
+ecrire ='ecrire';
+lire='lire';
+identif = alpha + alphanum;
 
 Ignored Tokens
 
@@ -16,4 +50,33 @@ espaces, commentaire;
 Productions
 
 programme = optdecvar listedecfonc ;
+listdefct = {decfct_listdefct} decfct listdefct | {epsilon} eps;
+decfct = identif l_par listdecvar r_par optdecvar ibloc;
+var = {entier_var} identif | {tab_var} identif l_cro expr r_cro;
+decvar = {entier_decvar} type_entier identif | {tab_decvar} type_entier identif l_cro number r_cro;
+optdecvar = {dec_var_opt} listdecvar pointvirgule | {epsilon} eps;
+listdecvar = {listdecvar} decvar listdecvarbis | {epsilon} eps;
+listdecvarbis = {souslistedecvar} pointvirgule decvar listdecvarbis | {epsilon} eps;
+app = identif l_par listexpr r_par;
+listexpr = {list_expr} expr listexprbis | {epsilon} eps;
+listexprbis = {list_expr_bis} virgule expr listexprbis | {epsilon} eps;
+inst = {affectation} iaff | {inst_si} isi | {inst_tq} itq | {inst_app} iapp | {inst_bloc} ibloc | {inst_return} iret;
+iaff = {affectation} var equal expr;
+isi = {inst_si} si expr alors ibloc | {inst_sinon} si expr alors ibloc sinon ibloc;
+itq = tant que expr faire ibloc;
+iapp = app;
+ibloc = l_acco listinst r_acco;
+listinst = {list_inst} inst listinstbis | {epsilon} eps;
+listinstbis = {list_inst_bis} pointvirgule listinstbis | {epsilon} eps;
+iret = retour expr;
+iecr = ecrire l_par expr r_par;
+ilire = lire l_par r_par;
+expr = {expr_or} expr or exprand | {expr_and} exprand;
+exprand = {expr_and} exprand and exprcomp | {expr_comp} exprcomp;
+exprcomp = {expr_eq} exprcomp equal exprplm | {expr_less} exprcomp less exprplm | {expr_minus_plus} exprplm;
+exprplm = {expr_plus} exprplm plus exprdm | {expr_minus} exprplm minus exprdm | {expr_div_mult} exprdm;
+exprdm = {expr_div} exprdm div exprneg | {expr_mult} exprdm mult exprneg | {expr_neg} exprneg;
+exprneg = {expr_neg} not exprneg | {expr_par} exprpar;
+exprpar = {expr_par} l_par expr r_par | {expr_number} number | {expr_app_fct} app | {expr_var} var;
+
 
