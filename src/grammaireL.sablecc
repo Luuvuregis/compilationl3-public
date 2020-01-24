@@ -49,7 +49,6 @@ espaces, commentaire;
 
 Productions
 
-programme = optdecvar listedecfonc ;
 listdefct = {decfct_listdefct} decfct listdefct | {epsilon} eps;
 decfct = identif l_par listdecvar r_par optdecvar ibloc;
 var = {entier_var} identif | {tab_var} identif l_cro expr r_cro;
@@ -62,7 +61,8 @@ listexpr = {list_expr} expr listexprbis | {epsilon} eps;
 listexprbis = {list_expr_bis} virgule expr listexprbis | {epsilon} eps;
 inst = {affectation} iaff | {inst_si} isi | {inst_tq} itq | {inst_app} iapp | {inst_bloc} ibloc | {inst_return} iret;
 iaff = {affectation} var equal expr;
-isi = {inst_si} si expr alors ibloc | {inst_sinon} si expr alors ibloc sinon ibloc;
+isi = {inst_si} si expr alors ibloc | {inst_sinon} si expr alors ibloc sinon wololo;
+wololo = ibloc;
 itq = tant que expr faire ibloc;
 iapp = app;
 ibloc = l_acco listinst r_acco;
